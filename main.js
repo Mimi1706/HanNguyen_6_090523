@@ -13,7 +13,6 @@ const createBestMovieCategory = async () => {
   const bestMovie = fetchedBestMovies.results[0];
   const imgNode = document.createElement("img");
   imgNode.setAttribute("src", bestMovie.image_url);
-
   document.getElementById("best-movie-cover").appendChild(imgNode);
   document.getElementById("best-movie-title").textContent = bestMovie.title;
 };
@@ -23,15 +22,22 @@ const createMovieCategory = async (category) => {
   const movies = fetchedMovies.results;
 
   const categoryNode = document.createElement("div");
-  document.getElementById("movie-categories").appendChild(categoryNode);
+  categoryNode.id = "movie-category";
 
   for (let i = 0; i < movies.length; i++) {
-    createMovieComponent();
+    categoryNode.appendChild(createMovieComponent(movies[i]));
   }
+
+  document.getElementById("movie-categories").appendChild(categoryNode);
+  document.getElementById("movie-categories").appendChild(categoryNode);
 };
 
 const createMovieComponent = (movie) => {
-  const movieNode = document.createElement("div");
+  const movieNode = document.createElement("article");
+  const imgNode = document.createElement("img");
+  imgNode.setAttribute("src", movie.image_url);
+  movieNode.appendChild(imgNode);
+  return movieNode;
 };
 
 window.addEventListener("load", () => {
