@@ -24,11 +24,18 @@ const createMovieCategory = async (category) => {
   const categoryNode = document.createElement("div");
   categoryNode.id = "movie-category";
 
+  const categoryTitle =
+    category.toString().charAt(0).toUpperCase() + category.slice(1);
+  const titleNode = document.createElement("h1");
+  titleNode.innerHTML = categoryTitle;
+  titleNode.id = "movie-category-title";
+
   for (let i = 0; i < movies.length; i++) {
     categoryNode.appendChild(createMovieComponent(movies[i]));
+    console.log(movies[i]);
   }
 
-  document.getElementById("movie-categories").appendChild(categoryNode);
+  document.getElementById("movie-categories").appendChild(titleNode);
   document.getElementById("movie-categories").appendChild(categoryNode);
 };
 
