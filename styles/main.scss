@@ -3,6 +3,7 @@ body {
   margin: 0;
   background-color: black;
   color: white;
+  overflow-x: hidden;
 }
 
 header {
@@ -43,10 +44,39 @@ main {
 }
 
 #movie-categories {
-  #movie-category {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+  .movie-category {
     padding: 1em;
+
+    .carousel-container {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      padding: 0 3em;
+
+      .carousel-slider {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .carousel-btnWrapper {
+        display: flex;
+        justify-content: space-between;
+        overflow: hidden;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+
+        button {
+          background-color: black;
+          color: white;
+          font-size: 2em;
+          width: 2em;
+          padding-bottom: 10px;
+          vertical-align: middle;
+        }
+      }
+    }
   }
 }

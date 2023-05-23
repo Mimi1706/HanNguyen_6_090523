@@ -8,6 +8,21 @@ const fetchMovies = async (filter) => {
     .catch((error) => console.error(error));
 };
 
+const fetchMoviesCategory = async (category) => {
+  const fetchedMovies = [];
+
+  // Retrieve the first two pages of movies in the chosen category sorted by best rated
+  for (let page = 1, maxPage = 2; page <= maxPage; page++) {
+    await fetchMovies(
+      `?genre=${category}&page=${page}&sort_by=-imdb_score`
+    ).then((data) => {
+      fetchedMovies.push(data.results);
+    });
+  }
+
+  return fetchedMovies;
+};
+
 const createBestMovieCategory = async () => {
   const fetchedBestMovies = await fetchMovies("?sort_by=-imdb_score");
   const bestMovie = fetchedBestMovies.results[0];
@@ -18,25 +33,21 @@ const createBestMovieCategory = async () => {
 };
 
 const createMovieCategory = async (category) => {
-  const fetchedMovies = await fetchMovies(`?genre=${category}`);
-  const movies = fetchedMovies.results;
-
-  const categoryNode = document.createElement("div");
-  categoryNode.id = "movie-category";
-
   const categoryTitle =
     category.toString().charAt(0).toUpperCase() + category.slice(1);
+  const movies = await fetchMoviesCategory(category);
+
+  const categoryNode = document.createElement("div");
+  categoryNode.className = `movie-category`;
+  categoryNode.id = `movie-category-${category}`;
+  document.getElementById("movie-categories").appendChild(categoryNode);
+
   const titleNode = document.createElement("h1");
   titleNode.innerHTML = categoryTitle;
   titleNode.id = "movie-category-title";
+  document.getElementById(`movie-category-${category}`).appendChild(titleNode);
 
-  for (let i = 0; i < movies.length; i++) {
-    categoryNode.appendChild(createMovieComponent(movies[i]));
-    console.log(movies[i]);
-  }
-
-  document.getElementById("movie-categories").appendChild(titleNode);
-  document.getElementById("movie-categories").appendChild(categoryNode);
+  createCarousel(movies, category);
 };
 
 const createMovieComponent = (movie) => {
@@ -47,9 +58,64 @@ const createMovieComponent = (movie) => {
   return movieNode;
 };
 
+const createCarousel = async (movies, category) => {
+  let carouselIndex = 0;
+
+  const carouselContainer = document.createElement("container");
+  carouselContainer.className = "carousel-container";
+  document
+    .getElementById(`movie-category-${category}`)
+    .appendChild(carouselContainer);
+
+  const carouselSlider = document.createElement("div");
+  carouselSlider.className = "carousel-slider";
+  carouselContainer.appendChild(carouselSlider);
+
+  const showMovies = () => {
+    let moviesDisplayed = movies[carouselIndex];
+    for (let i = 0; i < moviesDisplayed.length; i++) {
+      carouselSlider.appendChild(createMovieComponent(moviesDisplayed[i]));
+    }
+  };
+
+  showMovies();
+
+  const showPrevious = () => {
+    if (carouselIndex > 0) {
+      carouselIndex--;
+      carouselSlider.innerHTML = "";
+      showMovies();
+    }
+  };
+
+  const showNext = () => {
+    if (carouselIndex < 1) {
+      carouselIndex++;
+      carouselSlider.innerHTML = "";
+      showMovies();
+    }
+  };
+
+  const btnWrapper = document.createElement("div");
+  btnWrapper.className = "carousel-btnWrapper";
+  carouselContainer.appendChild(btnWrapper);
+
+  const prevBtn = document.createElement("button");
+  prevBtn.className = "carousel-prevBtn";
+  prevBtn.innerHTML = "&lt;";
+  prevBtn.addEventListener("click", showPrevious);
+  btnWrapper.appendChild(prevBtn);
+
+  const nextBtn = document.createElement("button");
+  nextBtn.className = "carousel-nextBtn";
+  nextBtn.innerHTML = "&gt;";
+  nextBtn.addEventListener("click", showNext);
+  btnWrapper.appendChild(nextBtn);
+};
+
 window.addEventListener("load", () => {
   createBestMovieCategory();
-  createMovieCategory("horror");
-  createMovieCategory("fantasy");
   createMovieCategory("romance");
+  createMovieCategory("drama");
+  createMovieCategory("family");
 });
