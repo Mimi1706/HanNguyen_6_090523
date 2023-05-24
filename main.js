@@ -13,11 +13,11 @@ const fetchMoviesCategory = async (category) => {
 
   // Retrieve the first two pages of movies in the chosen category sorted by best rated
   for (let page = 1, maxPage = 2; page <= maxPage; page++) {
-    await fetchMovies(
-      `?genre=${category}&page=${page}&sort_by=-imdb_score`
-    ).then((data) => {
-      fetchedMovies.push(data.results);
-    });
+    await fetchMovies(`?genre=${category}&page=${page}&sort_by=-imdb_score`)
+      .then((data) => {
+        fetchedMovies.push(data.results);
+      })
+      .catch((error) => console.error(error));
   }
 
   return fetchedMovies;
@@ -27,7 +27,7 @@ const createBestMovie = async () => {
   const fetchedBestMovies = await fetchMovies("?sort_by=-imdb_score");
   const bestMovie = fetchedBestMovies.results[0];
   const bestMovieDetails = await fetchMovies(bestMovie.id);
-  console.log(bestMovieDetails);
+
   const imgNode = document.createElement("img");
   imgNode.setAttribute("src", bestMovie.image_url);
   document.getElementById("best-movie-cover").appendChild(imgNode);
@@ -37,6 +37,9 @@ const createBestMovie = async () => {
     bestMovieDetails.genres.join(", ");
   document.getElementById("best-movie-description").textContent =
     bestMovieDetails.description;
+  document
+    .getElementById("best-movie-btn")
+    .addEventListener("click", () => populateModal(bestMovieDetails));
 };
 
 const createMovieCategory = async (category, name) => {
@@ -60,6 +63,7 @@ const createMovieComponent = (movie) => {
   const imgNode = document.createElement("img");
   imgNode.setAttribute("src", movie.image_url);
   movieNode.appendChild(imgNode);
+  movieNode.addEventListener("click", () => populateModal(movie));
   return movieNode;
 };
 
@@ -118,13 +122,50 @@ const createCarousel = (movies, category) => {
   btnWrapper.appendChild(nextBtn);
 };
 
-const createModal = () => {
-  const modal = document.createElement("div");
+const populateModal = async (movie) => {
+  const movieDetails = await fetchMovies(movie.id);
+  document.getElementById("modal-container").style.display = "flex";
+
+  const closeModal = () => {
+    document.getElementById("modal-container").style.display = "none";
+  };
+
+  document
+    .getElementById("modal-closeBtn")
+    .addEventListener("click", closeModal);
+
+  document
+    .getElementById("modal-cover-img")
+    .setAttribute("src", movie.image_url);
+
+  document.getElementById("modal-details-title").innerHTML =
+    movieDetails.original_title;
+  document.getElementById("modal-details-genre").innerHTML =
+    movieDetails.genres.join(", ");
+  document.getElementById("modal-details-releaseDate").innerHTML =
+    movieDetails.date_published;
+  document.getElementById("modal-details-rating").innerHTML =
+    movieDetails.rated;
+  document.getElementById("modal-details-imdb").innerHTML =
+    movieDetails.imdb_score;
+  document.getElementById("modal-details-director").innerHTML =
+    movieDetails.directors.join(", ");
+  document.getElementById("modal-details-actors").innerHTML =
+    movieDetails.actors.join(", ");
+  document.getElementById("modal-details-length").innerHTML =
+    movieDetails.duration + "min";
+  document.getElementById("modal-details-country").innerHTML =
+    movieDetails.countries.join(", ");
+  document.getElementById("modal-details-boxOffice").innerHTML =
+    movieDetails.worldwide_gross_income &&
+    `$${movieDetails.worldwide_gross_income}`;
+  document.getElementById("modal-details-description").innerHTML =
+    movieDetails.long_description;
 };
 
 window.addEventListener("load", async () => {
   await createBestMovie();
-  await createMovieCategory("", "Best movies");
+  await createMovieCategory("", "Best rated movies");
   createMovieCategory("romance", "Romance");
   createMovieCategory("drama", "Drama");
   createMovieCategory("family", "Family");
