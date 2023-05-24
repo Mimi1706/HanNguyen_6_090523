@@ -8,11 +8,16 @@ body {
 
 header {
   color: white;
+  background-color: rgb(67, 157, 133);
+  display: flex;
+  justify-content: center;
+}
+header div {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: rgb(67, 157, 133);
-  padding: 0 2em;
+  width: 100%;
+  max-width: 85vw;
 }
 
 main {
@@ -37,6 +42,24 @@ main {
 #best-movie-section #best-movie {
   width: 40vw;
   padding: 1em 2em;
+}
+#best-movie-section #best-movie #best-movie-title {
+  padding: 0;
+}
+#best-movie-section #best-movie #best-movie-details {
+  margin: 1em 0 2em 0;
+}
+#best-movie-section #best-movie #best-movie-details #best-movie-genre {
+  margin-bottom: 1em;
+  font-style: italic;
+  font-size: 1.2em;
+}
+#best-movie-section #best-movie #best-movie-btn {
+  background-color: rgb(67, 157, 133);
+  padding: 0.5em;
+  color: white;
+  font-size: 1.1em;
+  border-radius: 0.5em;
 }
 
 #movie-categories .movie-category {

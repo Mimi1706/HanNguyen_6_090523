@@ -1,3 +1,5 @@
+$primary: rgb(67, 157, 133);
+
 body {
   font-family: Arial, Helvetica, sans-serif;
   margin: 0;
@@ -8,11 +10,17 @@ body {
 
 header {
   color: white;
+  background-color: $primary;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: rgb(67, 157, 133);
-  padding: 0 2em;
+  justify-content: center;
+
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 85vw;
+  }
 }
 
 main {
@@ -40,6 +48,28 @@ main {
   #best-movie {
     width: 40vw;
     padding: 1em 2em;
+
+    #best-movie-title {
+      padding: 0;
+    }
+
+    #best-movie-details {
+      margin: 1em 0 2em 0;
+
+      #best-movie-genre {
+        margin-bottom: 1em;
+        font-style: italic;
+        font-size: 1.2em;
+      }
+    }
+
+    #best-movie-btn {
+      background-color: $primary;
+      padding: 0.5em;
+      color: white;
+      font-size: 1.1em;
+      border-radius: 0.5em;
+    }
   }
 }
 

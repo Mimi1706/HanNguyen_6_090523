@@ -23,18 +23,23 @@ const fetchMoviesCategory = async (category) => {
   return fetchedMovies;
 };
 
-const createBestMovieCategory = async () => {
+const createBestMovie = async () => {
   const fetchedBestMovies = await fetchMovies("?sort_by=-imdb_score");
   const bestMovie = fetchedBestMovies.results[0];
+  const bestMovieDetails = await fetchMovies(bestMovie.id);
+  console.log(bestMovieDetails);
   const imgNode = document.createElement("img");
   imgNode.setAttribute("src", bestMovie.image_url);
   document.getElementById("best-movie-cover").appendChild(imgNode);
   document.getElementById("best-movie-title").textContent = bestMovie.title;
+
+  document.getElementById("best-movie-genre").textContent =
+    bestMovieDetails.genres.join(", ");
+  document.getElementById("best-movie-description").textContent =
+    bestMovieDetails.description;
 };
 
-const createMovieCategory = async (category) => {
-  const categoryTitle =
-    category.toString().charAt(0).toUpperCase() + category.slice(1);
+const createMovieCategory = async (category, name) => {
   const movies = await fetchMoviesCategory(category);
 
   const categoryNode = document.createElement("div");
@@ -43,7 +48,7 @@ const createMovieCategory = async (category) => {
   document.getElementById("movie-categories").appendChild(categoryNode);
 
   const titleNode = document.createElement("h1");
-  titleNode.innerHTML = categoryTitle;
+  titleNode.innerHTML = name;
   titleNode.id = "movie-category-title";
   document.getElementById(`movie-category-${category}`).appendChild(titleNode);
 
@@ -58,7 +63,7 @@ const createMovieComponent = (movie) => {
   return movieNode;
 };
 
-const createCarousel = async (movies, category) => {
+const createCarousel = (movies, category) => {
   let carouselIndex = 0;
 
   const carouselContainer = document.createElement("container");
@@ -113,9 +118,14 @@ const createCarousel = async (movies, category) => {
   btnWrapper.appendChild(nextBtn);
 };
 
-window.addEventListener("load", () => {
-  createBestMovieCategory();
-  createMovieCategory("romance");
-  createMovieCategory("drama");
-  createMovieCategory("family");
+const createModal = () => {
+  const modal = document.createElement("div");
+};
+
+window.addEventListener("load", async () => {
+  await createBestMovie();
+  await createMovieCategory("", "Best movies");
+  createMovieCategory("romance", "Romance");
+  createMovieCategory("drama", "Drama");
+  createMovieCategory("family", "Family");
 });
